@@ -6,7 +6,7 @@ namespace Tower.Tower
     [RequireComponent(typeof (TowerPoolingh))]
     public class TowerTargeting : MonoBehaviour
     {
-        [SerializeField] internal List<GameObject> targets = new List<GameObject>();
+        [SerializeField, Tooltip("los targets de la torreta")] internal List<GameObject> targets = new List<GameObject>();
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
