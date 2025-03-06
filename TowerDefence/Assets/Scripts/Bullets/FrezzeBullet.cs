@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tower
+namespace Tower.Bullets
 {
     public class FrezzeBullet : Bullet
     {
@@ -13,7 +13,12 @@ namespace Tower
         // Update is called once per frame
         void Update()
         {
-        
+            Move();
         }
+        protected override void Effect()
+        {
+            throw new System.NotImplementedException();
+        }
+
     }
 }

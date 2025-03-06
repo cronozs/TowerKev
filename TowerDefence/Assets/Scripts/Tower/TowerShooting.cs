@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Tower.Bullets;
 
 namespace Tower.Tower
 {
@@ -29,11 +30,13 @@ namespace Tower.Tower
 
         private void Shoot()
         {
-            GameObject bullet = _pooling?.GetObject();
-            if (bullet != null)
+            GameObject currentTarget = _towerTargeting.targets[0];
+            GameObject currentBullet = _pooling?.GetObject();
+            if (currentBullet != null)
             {
-                bullet.transform.position = transform.position;
-                // falta darle la velocidad
+                currentBullet.transform.position = transform.position;
+                Bullet bullet = currentBullet.GetComponent<Bullet>();
+                if (bullet != null) bullet.Target = currentTarget.transform;
             }
             StartCoroutine(DelayShoot());
         }
