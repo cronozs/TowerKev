@@ -9,6 +9,7 @@ namespace Tower.Bullets
         [SerializeField] private float speed;
         private float currentSpeed;
         private Transform target;
+        private IReturnPool returnPool;
 
         public Transform Target
         {
@@ -23,9 +24,18 @@ namespace Tower.Bullets
             }
         }
 
+        public void Initialize(IReturnPool pool) 
+        {
+            returnPool = pool;
+        }
+
         protected void Move()
-        {      
-            if (target == null) return;
+        {
+            if (target == null)
+            {
+                ReturnToPool();
+                return;
+            }
             Vector3 direction = (target.position - transform.position);
             if (direction.magnitude > 0.1f)
             {
@@ -54,7 +64,20 @@ namespace Tower.Bullets
         {
             Debug.Log("istrigeeeeer");
             Effect();
-            gameObject.SetActive(false);
+            ReturnToPool();
+        }
+
+
+        private void ReturnToPool()
+        {
+            if (returnPool != null)
+            {
+                returnPool.ReturnObject(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("No hay pool asignado para esta bala.");
+            }
         }
 
         protected abstract void Effect();

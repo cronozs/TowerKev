@@ -36,7 +36,11 @@ namespace Tower.Tower
             {
                 currentBullet.transform.position = transform.position;
                 Bullet bullet = currentBullet.GetComponent<Bullet>();
-                if (bullet != null) bullet.Target = currentTarget.transform;
+                if (bullet != null)
+                {
+                    bullet.Target = currentTarget.transform;
+                    bullet.Initialize(_pooling as IReturnPool);
+                }
             }
             StartCoroutine(DelayShoot());
         }

@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 226736469}
   - component: {fileID: 226736472}
   - component: {fileID: 226736473}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -645,7 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86f223cb45064b5469154ff3c90bf682, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 5
+  poolSize: 2
   bullet: {fileID: 5950578909118822375, guid: d9e365eca9f890047aaeb998e0960887, type: 3}
 --- !u!50 &1210191089
 Rigidbody2D:

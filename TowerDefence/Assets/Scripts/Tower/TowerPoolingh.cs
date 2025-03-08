@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Tower.Tower
 {
     [RequireComponent(typeof(TowerShooting))]
-    public class TowerPoolingh : MonoBehaviour, IObjectPool
+    public class TowerPoolingh : MonoBehaviour, IObjectPool, IReturnPool
     {
         [SerializeField, Tooltip("tamaño del pool a la hora de crear la torre")] private int poolSize;
         [SerializeField, Tooltip("El prefab de la bala que usara la torre")] private GameObject bullet;
@@ -17,8 +17,8 @@ namespace Tower.Tower
             {
                 GameObject currentBullet = Instantiate(bullet.gameObject, transform.position, Quaternion.identity);
                 currentBullet.transform.SetParent(transform);
-                _bulletPool.Enqueue(currentBullet);
                 currentBullet.SetActive(false);
+                _bulletPool.Enqueue(currentBullet);
             }
         }
         public GameObject GetObject()
@@ -34,7 +34,8 @@ namespace Tower.Tower
 
         public void ReturnObject(GameObject obj)
         {
-            throw new System.NotImplementedException();
+            obj.SetActive(false);
+            _bulletPool.Enqueue(obj);
         }
     }
 }
