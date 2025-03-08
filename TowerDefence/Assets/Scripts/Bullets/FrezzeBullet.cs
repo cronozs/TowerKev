@@ -17,7 +17,7 @@ namespace Tower.Bullets
         }
         protected override void Effect()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Efecto");
         }
 
     }
