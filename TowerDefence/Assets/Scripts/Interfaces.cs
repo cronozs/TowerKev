@@ -14,6 +14,6 @@ namespace Tower
 
     public interface IDamagable
     {
-        public void Damage(float damage);
+        public void Damage(float damage, GameObject target);
     }
 }

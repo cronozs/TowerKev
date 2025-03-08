@@ -13,7 +13,7 @@ namespace Tower.Bullets
         private Transform _target;
         private IReturnPool _returnPool;
 
-        public static event Action<float> OnCol;
+        public event Action<float, GameObject> OnCol;
 
         public Transform Target
         {
@@ -66,8 +66,8 @@ namespace Tower.Bullets
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            Effect();
-            OnCol?.Invoke(damage);
+            Effect(collision.gameObject);
+            OnCol?.Invoke(damage, collision.gameObject);
             ReturnToPool();
         }
 
@@ -84,6 +84,6 @@ namespace Tower.Bullets
             }
         }
 
-        protected abstract void Effect();
+        protected abstract void Effect(GameObject col);
     }
 }

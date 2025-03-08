@@ -33,11 +33,14 @@ namespace Tower.Enemy
         {
             if (_enemyPool.Count > 0)
             {
-                GameObject bullet = _enemyPool.Dequeue();
-                bullet.SetActive(true);
-                return bullet;
+                GameObject enemy = _enemyPool.Dequeue();
+                enemy.SetActive(true);
+                return enemy;
             }
-            return null;
+
+            GameObject newEnemy = Instantiate(enemisPrefabs[Random.Range(0, enemisPrefabs.Length - 1)].gameObject, transform.position, Quaternion.identity);
+            newEnemy.transform.SetParent(transform);
+            return newEnemy;
         }
 
         public void ReturnObject(GameObject obj)

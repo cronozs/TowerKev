@@ -8,7 +8,7 @@ namespace Tower.Enemy
     public class EnemyLife : MonoBehaviour, IDamagable
     {
         [SerializeField] private float life;
-        private float _currentLife;
+        public float _currentLife;
         private EnemyPath _enemyPath;
 
         public static event Action<GameObject> Ondeath;
@@ -21,22 +21,35 @@ namespace Tower.Enemy
 
         private void OnEnable()
         {
-            Bullet.OnCol += Damage;
             _currentLife = life;
         }
 
         private void OnDisable()
         {
-            Bullet.OnCol -= Damage;
+            _enemyPath.isFollow = true;
             _enemyPath.currentPoint = 0;
+            _enemyPath.RestoreSpeed();
         }
-        public void Damage(float damage)
+
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            _currentLife -= damage;
-            if(_currentLife <= 0)
+            Bullet bullet = collision.GetComponent<Bullet>();
+            if (bullet != null)
             {
-                Ondeath.Invoke(gameObject);
-                gameObject.SetActive(false);
+                bullet.OnCol += Damage;
+            }
+        }
+
+        public void Damage(float damage, GameObject target)
+        {
+            if(target == gameObject)
+            {
+                _currentLife -= damage;
+                if(_currentLife <= 0)
+                {
+                    Ondeath.Invoke(gameObject);
+                    gameObject.SetActive(false);
+                }
             }
         }
     }
