@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Tower.Enemy;
 
 namespace Tower.Tower
 {
@@ -16,6 +17,21 @@ namespace Tower.Tower
         private void OnTriggerExit2D(Collider2D collision)
         {
             if(targets.Contains(collision.gameObject)) targets.Remove(collision.gameObject);
+        }
+
+        private void OnEnable()
+        {
+            EnemyLife.Ondeath += RemoveTarget;
+        }
+
+        private void OnDisable()
+        {
+            EnemyLife.Ondeath -= RemoveTarget;
+        }
+
+        private void RemoveTarget(GameObject obj)
+        {
+            if (targets.Contains(obj)) targets.Remove(obj);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,41 +6,44 @@ namespace Tower.Bullets
 {
     public abstract class Bullet : MonoBehaviour
     {
-        [SerializeField] private float lifeTime;
-        [SerializeField] private float speed;
-        private float currentSpeed;
-        private Transform target;
-        private IReturnPool returnPool;
+        [SerializeField, Tooltip("cuanto tiempo mi bala vivira si no golpea algo")] private float lifeTime;
+        [SerializeField, Tooltip("la veklocidad que quiero que tenga mi bala al ser disparada")] private float speed;
+        [SerializeField] private float damage;
+        private float _currentSpeed;
+        private Transform _target;
+        private IReturnPool _returnPool;
+
+        public static event Action<float> OnCol;
 
         public Transform Target
         {
-            get => target;
+            get => _target;
             set
             {
-                target = value;
-                if (target != null)
+                _target = value;
+                if (_target != null)
                 {
-                    currentSpeed = speed;
+                    _currentSpeed = speed;
                 }
             }
         }
 
         public void Initialize(IReturnPool pool) 
         {
-            returnPool = pool;
+            _returnPool = pool;
         }
 
         protected void Move()
         {
-            if (target == null)
+            if (_target == null)
             {
                 ReturnToPool();
                 return;
             }
-            Vector3 direction = (target.position - transform.position);
+            Vector3 direction = (_target.position - transform.position);
             if (direction.magnitude > 0.1f)
             {
-                transform.position += direction.normalized * currentSpeed * Time.deltaTime;
+                transform.position += direction.normalized * _currentSpeed * Time.deltaTime;
             }
         }
 
@@ -51,7 +55,7 @@ namespace Tower.Bullets
         private void OnDisable()
         {
             StopAllCoroutines();
-            currentSpeed = 0;
+            _currentSpeed = 0;
         }
 
         IEnumerator LifeTime()
@@ -62,17 +66,17 @@ namespace Tower.Bullets
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            Debug.Log("istrigeeeeer");
             Effect();
+            OnCol?.Invoke(damage);
             ReturnToPool();
         }
 
 
         private void ReturnToPool()
         {
-            if (returnPool != null)
+            if (_returnPool != null)
             {
-                returnPool.ReturnObject(gameObject);
+                _returnPool.ReturnObject(gameObject);
             }
             else
             {

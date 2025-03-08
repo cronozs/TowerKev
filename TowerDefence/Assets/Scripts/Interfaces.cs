@@ -11,4 +11,9 @@ namespace Tower
     {
         public void ReturnObject(GameObject obj);
     }
+
+    public interface IDamagable
+    {
+        public void Damage(float damage);
+    }
 }
