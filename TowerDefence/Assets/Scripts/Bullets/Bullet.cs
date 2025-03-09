@@ -6,14 +6,13 @@ namespace Tower.Bullets
 {
     public abstract class Bullet : MonoBehaviour
     {
-        [SerializeField, Tooltip("cuanto tiempo mi bala vivira si no golpea algo")] private float lifeTime;
-        [SerializeField, Tooltip("la veklocidad que quiero que tenga mi bala al ser disparada")] private float speed;
-        [SerializeField] private float damage;
+        [SerializeField] private float lifeTime;  
+        [SerializeField] private float speed;     
+        [SerializeField] protected float effectDuration; 
         private float _currentSpeed;
         private Transform _target;
-        private IReturnPool _returnPool;
-
-        public event Action<float, GameObject> OnCol;
+        private BulletPoolManager _bulletPoolManager; 
+        private string _bulletType;  
 
         public Transform Target
         {
@@ -28,18 +27,27 @@ namespace Tower.Bullets
             }
         }
 
-        public void Initialize(IReturnPool pool) 
+        public void Initialize(BulletPoolManager poolManager, string bulletType)
         {
-            _returnPool = pool;
+            if (poolManager == null)
+            {
+                Debug.LogError("El pool manager no puede ser nulo.");
+                return;
+            }
+
+            _bulletPoolManager = poolManager;
+            _bulletType = bulletType;
+            StartCoroutine(LifeTime());  
         }
 
         protected void Move()
         {
             if (_target == null)
             {
-                ReturnToPool();
+                ReturnToPool();  
                 return;
             }
+
             Vector3 direction = (_target.position - transform.position);
             if (direction.magnitude > 0.1f)
             {
@@ -49,7 +57,7 @@ namespace Tower.Bullets
 
         private void OnEnable()
         {
-            StartCoroutine(LifeTime());
+            StartCoroutine(LifeTime());  
         }
 
         private void OnDisable()
@@ -60,28 +68,29 @@ namespace Tower.Bullets
 
         IEnumerator LifeTime()
         {
-            yield return new WaitForSeconds(lifeTime);
-            gameObject.SetActive(false);
+            yield return new WaitForSeconds(lifeTime);  
+            ReturnToPool();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             Effect(collision.gameObject);
-            OnCol?.Invoke(damage, collision.gameObject);
+
             ReturnToPool();
         }
 
-
-        private void ReturnToPool()
+        public void ReturnToPool()
         {
-            if (_returnPool != null)
+            if (_bulletPoolManager != null)
             {
-                _returnPool.ReturnObject(gameObject);
+                _bulletPoolManager.ReturnObject(gameObject, _bulletType);  
             }
             else
             {
                 Debug.LogWarning("No hay pool asignado para esta bala.");
             }
+
+            gameObject.SetActive(false);
         }
 
         protected abstract void Effect(GameObject col);

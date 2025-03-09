@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Tower.Enemy
 {
-    public class EnemyPooling : MonoBehaviour, IObjectPool, IReturnPool
+    public class EnemyPooling : MonoBehaviour
     {
         [SerializeField] private int poolSize;
         [SerializeField] private EnemyLife[] enemisPrefabs;

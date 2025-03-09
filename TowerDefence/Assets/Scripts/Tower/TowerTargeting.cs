@@ -4,7 +4,7 @@ using Tower.Enemy;
 
 namespace Tower.Tower
 {
-    [RequireComponent(typeof (TowerPoolingh))]
+    [RequireComponent(typeof (TowerShooting))]
     public class TowerTargeting : MonoBehaviour
     {
         [SerializeField, Tooltip("los targets de la torreta")] internal List<GameObject> targets = new List<GameObject>();

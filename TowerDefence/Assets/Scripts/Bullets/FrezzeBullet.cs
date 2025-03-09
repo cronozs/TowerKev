@@ -1,35 +1,55 @@
+using System.Collections;
 using UnityEngine;
 using Tower.Enemy;
-using System.Collections;
-using System;
 
 namespace Tower.Bullets
 {
-    public class FrezzeBullet : Bullet
+    public class FreezeBullet : Bullet
     {
-        [SerializeField] private float effectDuration;
-        void Update()
+        [SerializeField] private float freezeDuration = 3f;  
+        [SerializeField] private float damage = 10f;  
+
+
+        private void Update()
         {
             Move();
         }
+
         protected override void Effect(GameObject col)
         {
-            EnemyPath currentEnemy = col.GetComponent<EnemyPath>();
-
-            if (currentEnemy != null)
+            if (!col.activeInHierarchy)
             {
-                float speedMod = currentEnemy.Speed / 2;
-                currentEnemy.Speed = speedMod;
-
-                //  Ejecutamos la corrutina en el enemigo, NO en la bala
-                currentEnemy.StartCoroutine(DelayToReturn(currentEnemy));
+                ReturnToPool();
+                return;
             }
+
+            EnemyLife enemyLife = col.GetComponent<EnemyLife>();
+            if (enemyLife != null)
+            {
+                enemyLife.Damage(damage);
+            }
+
+            EnemyPath enemyPath = col.GetComponent<EnemyPath>();
+            if (enemyPath != null)
+            {
+                enemyPath.Speed = 0f;
+
+                if (col.activeInHierarchy)
+                {
+                    CorrutineRunner.Instance.RunCoroutine(DelayToReturn(enemyPath));
+                }
+            }
+
+            ReturnToPool();
         }
 
-        private IEnumerator DelayToReturn(EnemyPath enemySpeed)
+        private IEnumerator DelayToReturn(EnemyPath enemyPath)
         {
-            yield return new WaitForSeconds(effectDuration);
-            enemySpeed.RestoreSpeed();
+            yield return new WaitForSeconds(freezeDuration);
+            if (enemyPath != null && enemyPath.gameObject.activeInHierarchy) 
+            {
+                enemyPath.RestoreSpeed();  
+            }
         }
     }
 }

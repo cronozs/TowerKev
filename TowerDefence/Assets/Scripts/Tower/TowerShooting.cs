@@ -8,20 +8,21 @@ namespace Tower.Tower
     public class TowerShooting : MonoBehaviour
     {
 
-        [SerializeField, Tooltip("tiempo de espera para el disparo de la torre")] private float delay;
+        [SerializeField] private float delay;
         private bool _canShoot = true;
-        private IObjectPool _pooling;
         private TowerTargeting _towerTargeting;
+        [SerializeField] private string bulletType;
+        private BulletPoolManager _bulletPoolManager;
 
         private void Start()
         {
             _towerTargeting = GetComponent<TowerTargeting>();
-            _pooling = GetComponent<TowerPoolingh>();
+            _bulletPoolManager = FindObjectOfType<BulletPoolManager>();
         }
 
         private void Update()
         {
-            if(_towerTargeting.targets.Count != 0 && _canShoot)
+            if (_towerTargeting.targets.Count != 0 && _canShoot)
             {
                 Shoot();
                 _canShoot = false;
@@ -31,7 +32,7 @@ namespace Tower.Tower
         private void Shoot()
         {
             GameObject currentTarget = _towerTargeting.targets[0];
-            GameObject currentBullet = _pooling?.GetObject();
+            GameObject currentBullet = _bulletPoolManager.GetObject(bulletType);
             if (currentBullet != null)
             {
                 currentBullet.transform.position = transform.position;
@@ -39,7 +40,6 @@ namespace Tower.Tower
                 if (bullet != null)
                 {
                     bullet.Target = currentTarget.transform;
-                    bullet.Initialize(_pooling as IReturnPool);
                 }
             }
             StartCoroutine(DelayShoot());
