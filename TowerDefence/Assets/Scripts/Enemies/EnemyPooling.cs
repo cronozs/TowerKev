@@ -12,7 +12,7 @@ namespace Tower.Enemy
         {
             for (int index = 0; index <= poolSize; index++)
             {
-                GameObject currentEnemy = Instantiate(enemisPrefabs[Random.Range(0, enemisPrefabs.Length -1)].gameObject, transform.position, Quaternion.identity);
+                GameObject currentEnemy = Instantiate(enemisPrefabs[Random.Range(0, enemisPrefabs.Length)].gameObject, transform.position, Quaternion.identity);
                 currentEnemy.transform.SetParent(transform);
                 currentEnemy.SetActive(false);
                 _enemyPool.Enqueue(currentEnemy);
