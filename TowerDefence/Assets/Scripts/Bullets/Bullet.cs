@@ -37,7 +37,6 @@ namespace Tower.Bullets
 
             _bulletPoolManager = poolManager;
             _bulletType = bulletType;
-            StartCoroutine(LifeTime());  
         }
 
         protected void Move()
